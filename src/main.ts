@@ -17,16 +17,42 @@ const resultHtml = document.querySelector(".results") as HTMLDivElement;
 
 interface MortgageInputs {
   mortgageAmount: number;
-  morgageTerm: number;
+  mortgageTerm: number;
   mortgageRate: number;
   mortgageType: "repayment" | "interest";
 }
 
-form.addEventListener("submit", (e: Event) => {
+function getFormData(e:Event):MortgageInputs | null{
+     
   e.preventDefault();
 
-  const mortgage: number = parseFloat(mortgageInput.value);
-  const term: number = parseInt(termInput.value);
-  const rate: number = parseFloat(rateInput.value)
-  console.log(rate)
-});
+  const mortgage = parseFloat(mortgageInput.value);
+  const term = parseInt(termInput.value);
+  const rate = parseFloat(rateInput.value);
+  const type = (
+    document.querySelector('[name="type"]:checked') as HTMLInputElement
+  ).id;
+  console.log(type);
+
+  if (isNaN(mortgage) || isNaN(term) || isNaN(rate)) {
+    return null;
+  }
+
+  const formData = {
+    mortgageAmount: mortgage,
+    mortgageTerm: term,
+    mortgageRate: rate,
+    mortgageType: type as "repayment" | "interest",
+  };
+//   console.log(formData);
+calculateMortgage(formData)
+  return formData;
+
+}
+
+
+form.addEventListener("submit", getFormData);
+
+function calculateMortgage(data){
+console.log(data)
+}
