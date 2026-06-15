@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap");
 
 $green: #d8db2f;
+$opacityGreen: #d7da2f80;
 $background: #e4f4fd;
 $white: #fff;
 $thinTextColor: #4e6e7e;
@@ -35,7 +36,7 @@ main {
   @media screen and (min-width: 768px) {
     padding: 40px 0;
   }
-    @media screen and (min-width: 1100px) {
+  @media screen and (min-width: 1100px) {
     height: 100vh;
     padding: 0;
     align-items: center;
@@ -214,6 +215,10 @@ main {
           color: $darkBlue;
           font-weight: bold;
           font-size: 18px;
+
+          &:hover {
+            background-color: $opacityGreen;
+          }
         }
       }
     }
@@ -226,7 +231,6 @@ main {
         border-bottom-left-radius: 80px;
         display: flex;
         justify-content: center;
-
       }
 
       @media screen and (min-width: 768px) {
@@ -235,9 +239,9 @@ main {
       //primary box
       .primary {
         display: flex;
-          flex-direction: column;
-          justify-content: center;
-          align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         .child {
           text-align: center;
           display: none;
