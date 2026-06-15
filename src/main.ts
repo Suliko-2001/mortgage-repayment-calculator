@@ -22,16 +22,20 @@ interface MortgageInputs {
   mortgageType: "repayment" | "interest";
 }
 
-function getFormData():MortgageInputs | null{
-     
+ const pounds = new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP",
+  });
 
+function getFormData(): MortgageInputs | null {
   const mortgage = parseFloat(mortgageInput.value);
   const term = parseInt(termInput.value);
   const rate = parseFloat(rateInput.value);
   const type = (
     document.querySelector('[name="type"]:checked') as HTMLInputElement
   ).id;
-  console.log(type);
+  //   console.log(type);
+
 
   if (isNaN(mortgage) || isNaN(term) || isNaN(rate)) {
     return null;
@@ -43,21 +47,41 @@ function getFormData():MortgageInputs | null{
     mortgageRate: rate,
     mortgageType: type as "repayment" | "interest",
   };
-//   console.log(formData);
-
+  //   console.log(formData);
 
   return formData;
 }
 
+let monthlyPayment: number = 0;
+let totalPayment: number = 0;
+
+function calculateMortgage(e: Event) {
+  e.preventDefault();
+
+  const data = getFormData();
+  console.log(data);
+
+  if (!data) {
+    return;
+  }
+  const { mortgageAmount, mortgageTerm, mortgageRate, mortgageType } = data;
+
+  const monthlyRate = mortgageRate / 100 / 12;
+  const totalNumPayments = mortgageTerm * 12;
+
+  if (mortgageType === "repayment") {
+    monthlyPayment =
+      mortgageAmount *
+      ((monthlyRate * (1 + monthlyRate) ** totalNumPayments) /
+        ((1 + monthlyRate) ** totalNumPayments - 1));
 
 
+    totalPayment = monthlyPayment * totalNumPayments
+  }
 
-function calculateMortgage(e:Event){
-      e.preventDefault();
+  console.log(pounds.format(monthlyPayment))
+  console.log(pounds.format(totalPayment))
 
-    const data = getFormData()
-    console.log(data)
 }
-
 
 form.addEventListener("submit", calculateMortgage);
