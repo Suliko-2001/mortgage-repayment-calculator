@@ -22,9 +22,8 @@ interface MortgageInputs {
   mortgageType: "repayment" | "interest";
 }
 
-function getFormData(e:Event):MortgageInputs | null{
+function getFormData():MortgageInputs | null{
      
-  e.preventDefault();
 
   const mortgage = parseFloat(mortgageInput.value);
   const term = parseInt(termInput.value);
@@ -45,14 +44,20 @@ function getFormData(e:Event):MortgageInputs | null{
     mortgageType: type as "repayment" | "interest",
   };
 //   console.log(formData);
-calculateMortgage(formData)
+
+
   return formData;
-
 }
 
 
-form.addEventListener("submit", getFormData);
 
-function calculateMortgage(data){
-console.log(data)
+
+function calculateMortgage(e:Event){
+      e.preventDefault();
+
+    const data = getFormData()
+    console.log(data)
 }
+
+
+form.addEventListener("submit", calculateMortgage);
