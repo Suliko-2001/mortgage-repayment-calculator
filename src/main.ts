@@ -3,29 +3,85 @@ const form = document.querySelector("form") as HTMLFormElement;
 const clearBtn = document.querySelector(".clear") as HTMLButtonElement;
 const calculateBtn = document.querySelector(".calc") as HTMLButtonElement;
 
-const mortgageInput = document.getElementById("mortgage_amount");
-const termInput = document.getElementById("term");
-const rateInput = document.getElementById(".rate");
+const mortgageInput = document.getElementById(
+  "mortgage_amount",
+) as HTMLInputElement;
+const termInput = document.getElementById("term") as HTMLInputElement;
+const rateInput = document.getElementById("rate") as HTMLInputElement;
 
 const monthlySum = document.getElementById("monthly_sum") as HTMLSpanElement;
-const TotalSum = document.getElementById("total_sum") as HTMLSpanElement;
+const totalSum = document.getElementById("total_sum") as HTMLSpanElement;
 
 const primaryChild = document.querySelector(".child") as HTMLDivElement;
-const resultHTML = document.querySelector(".results") as HTMLDivElement;
+const resultHtml = document.querySelector(".results") as HTMLDivElement;
 
-interface MortgageINputs {
-  MortgageAmounts: number;
-  morgageTerm: number;
+interface MortgageInputs {
+  mortgageAmount: number;
+  mortgageTerm: number;
   mortgageRate: number;
-  mortgageType: "Repayment" | "interest";
+  mortgageType: "repayment" | "interest";
 }
 
-form.addEventListener("submit", (e: Event) => {
+ const pounds = new Intl.NumberFormat("en-GB", {
+    style: "currency",
+    currency: "GBP",
+  });
+
+function getFormData(): MortgageInputs | null {
+  const mortgage = parseFloat(mortgageInput.value);
+  const term = parseInt(termInput.value);
+  const rate = parseFloat(rateInput.value);
+  const type = (
+    document.querySelector('[name="type"]:checked') as HTMLInputElement
+  ).id;
+  //   console.log(type);
+
+
+  if (isNaN(mortgage) || isNaN(term) || isNaN(rate)) {
+    return null;
+  }
+
+  const formData = {
+    mortgageAmount: mortgage,
+    mortgageTerm: term,
+    mortgageRate: rate,
+    mortgageType: type as "repayment" | "interest",
+  };
+  //   console.log(formData);
+
+  return formData;
+}
+
+let monthlyPayment: number = 0;
+let totalPayment: number = 0;
+
+function calculateMortgage(e: Event) {
   e.preventDefault();
 
-  const mortgage: number = parseFloat(mortgageInput.value);
-  const term: number = parseInt(termInput.value);
+  const data = getFormData();
+  console.log(data);
 
-  const rate: number = parseFloat(rateInput.value);
-  console.log(rate);
-});
+  if (!data) {
+    return;
+  }
+  const { mortgageAmount, mortgageTerm, mortgageRate, mortgageType } = data;
+
+  const monthlyRate = mortgageRate / 100 / 12;
+  const totalNumPayments = mortgageTerm * 12;
+
+  if (mortgageType === "repayment") {
+    monthlyPayment =
+      mortgageAmount *
+      ((monthlyRate * (1 + monthlyRate) ** totalNumPayments) /
+        ((1 + monthlyRate) ** totalNumPayments - 1));
+
+
+    totalPayment = monthlyPayment * totalNumPayments
+  }
+
+  console.log(pounds.format(monthlyPayment))
+  console.log(pounds.format(totalPayment))
+
+}
+
+form.addEventListener("submit", calculateMortgage);
